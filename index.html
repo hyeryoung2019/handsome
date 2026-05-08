@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>수학 강사 프로필</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8D5A3;
+      --gold-dark: #8B6914;
+      --bg: #0E0E0E;
+      --surface: #161616;
+      --surface2: #1E1E1E;
+      --border: rgba(201,168,76,0.18);
+      --border-hover: rgba(201,168,76,0.4);
+      --text: #F0EBE0;
+      --text-muted: #7A746A;
+      --text-sub: #A89880;
+    }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', '맑은 고딕', 'Malgun Gothic', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1rem;
+    }
+
+    /* subtle grid bg */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .wrap {
+      position: relative; z-index: 1;
+      max-width: 540px; width: 100%;
+      animation: up 0.8s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes up {
+      from { opacity:0; transform: translateY(28px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* Top accent line */
+    .accent-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin-bottom: 2.5rem;
+    }
+
+    /* Avatar */
+    .avatar-row { display: flex; justify-content: center; margin-bottom: 2rem; }
+    .avatar-outer {
+      position: relative;
+      width: 96px; height: 96px;
+    }
+    .avatar-ring {
+      position: absolute; inset: 0; border-radius: 50%;
+      border: 1px solid var(--border-hover);
+      animation: spin 25s linear infinite;
+    }
+    .avatar-ring::before {
+      content: '';
+      position: absolute; top: -3px; left: 50%;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gold);
+      transform: translateX(-50%);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .avatar-inner {
+      position: absolute; inset: 8px; border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+    }
+
+    /* Header */
+    .header { text-align: center; margin-bottom: 2.5rem; }
+    .badge {
+      display: inline-block;
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--border);
+      padding: 4px 16px; border-radius: 2px; margin-bottom: 1.25rem;
+    }
+    h1 {
+      font-size: 28px; font-weight: 300; letter-spacing: -0.01em;
+      color: var(--text); line-height: 1.35; margin-bottom: 0.5rem;
+    }
+    h1 strong { font-weight: 600; color: var(--gold-light); }
+    .subline { font-size: 13px; color: var(--text-muted); letter-spacing: 0.05em; }
+
+    /* Divider */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 2rem 0;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--gold); flex-shrink: 0;
+    }
+
+    /* Intro */
+    .intro {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .intro::before {
+      content: '"';
+      position: absolute; top: 10px; left: 16px;
+      font-size: 48px; color: var(--gold); opacity: 0.3;
+      line-height: 1; font-family: Georgia, serif;
+      pointer-events: none;
+    }
+    .intro p {
+      font-size: 14.5px; line-height: 1.95;
+      color: var(--text-sub);
+      padding-top: 0.5rem;
+    }
+
+    /* Section label */
+    .section-label {
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.25rem;
+    }
+
+    /* Timeline */
+    .timeline { margin-bottom: 2rem; }
+    .tl-item { display: flex; gap: 20px; }
+    .tl-gutter { display: flex; flex-direction: column; align-items: center; padding-top: 2px; }
+    .tl-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      background: var(--surface2); border: 1.5px solid var(--text-muted);
+    }
+    .tl-dot.current { background: var(--gold); border-color: var(--gold); }
+    .tl-line { width: 1px; flex: 1; background: var(--border); margin: 4px 0; min-height: 24px; }
+    .tl-item:last-child .tl-line { display: none; }
+    .tl-body { padding-bottom: 1.5rem; }
+    .tl-title {
+      font-size: 14px; font-weight: 500; color: var(--text);
+      margin-bottom: 4px; display: flex; align-items: center; gap: 10px;
+    }
+    .now-tag {
+      font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--border);
+      padding: 2px 8px; border-radius: 2px;
+    }
+    .tl-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+
+    /* Tags */
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      font-size: 12px; color: var(--text-sub); letter-spacing: 0.04em;
+      border: 1px solid var(--border); border-radius: 2px;
+      padding: 5px 14px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .tag:hover { border-color: var(--gold); color: var(--gold-light); }
+
+    /* Bottom accent */
+    .bottom-accent {
+      margin-top: 2.5rem;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.4;
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 23px; }
+      .intro p { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="accent-line"></div>
+
+    <div class="avatar-row">
+      <div class="avatar-outer">
+        <div class="avatar-ring"></div>
+        <div class="avatar-inner">📐</div>
+      </div>
+    </div>
+
+    <div class="header">
+      <div class="badge">Math Instructor</div>
+      <h1>수학을 <strong>쉽고 재미있게</strong></h1>
+      <p class="subline">수학 전공 &nbsp;·&nbsp; 중학교 수학 전문</p>
+    </div>
+
+    <div class="intro">
+      <p>수학을 전공하고, 금융권 통계분석부터 초등·중등 교육 현장까지 다양한 경험을 쌓아왔습니다. 숫자 속에 담긴 논리와 아름다움을 학생들과 함께 발견하는 것을 가장 큰 보람으로 여기고 있어요. 지금은 학원에서 중학교 수학을 가르치며, 개념을 탄탄히 쌓는 수업을 만들어가고 있습니다.</p>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-dot"></div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="section-label">Career</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-gutter">
+          <div class="tl-dot"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-title">금융권 · 통계분석</div>
+          <div class="tl-desc">데이터 기반 의사결정, 통계 모델링 실무</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-gutter">
+          <div class="tl-dot"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-title">초등학교 수학 교사</div>
+          <div class="tl-desc">수학의 기초 개념을 쉽고 친근하게 전달</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-gutter">
+          <div class="tl-dot current"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-title">학원 중학교 수학 강사 <span class="now-tag">현재</span></div>
+          <div class="tl-desc">개념 중심 수업, 문제 해결력 향상</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-dot"></div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="section-label">Expertise</div>
+    <div class="tags">
+      <span class="tag">통계분석</span>
+      <span class="tag">수학 전공</span>
+      <span class="tag">초등 교육</span>
+      <span class="tag">중등 수학</span>
+      <span class="tag">개념 중심 수업</span>
+    </div>
+
+    <div class="bottom-accent"></div>
+  </div>
+</body>
+</html>
